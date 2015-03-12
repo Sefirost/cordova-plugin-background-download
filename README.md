@@ -1,5 +1,23 @@
 Background Download plugin for Apache Cordova
 ==================================
+This fork has been made in order to allow to set title, description and notification visibility for download manager on Android. The createDownload method accepts new optional parameters. Thanks to [sgrebnov](https://github.com/sgrebnov/cordova-plugin-background-download) for the original plugin.
+
+Notification Visibility values:
+
+        BackgroundDownloader.prototype.NotificationVisibility = { 
+                VISIBILITY_VISIBLE: 0,
+                VISIBILITY_VISIBLE_NOTIFY_COMPLETED: 1,
+                VISIBILITY_HIDDEN: 2,
+                VISIBILITY_VISIBLE_NOTIFY_ONLY_COMPLETION: 3
+        };
+
+**Example**
+
+        var download = downloader.createDownload(uriString, targetFile,
+        "Title", "Description", downloader.NotificationVisibility.VISIBILITY_HIDDEN);
+
+
+==================================
 API provides an advanced file download functionality that persists beyond app termination, runs in the background and continues even when the user closed/suspended the application. The plugin includes progress updates and primarily designed for long-term transfer operations for resources like video, music, and large images.
 
 **Sample usage**

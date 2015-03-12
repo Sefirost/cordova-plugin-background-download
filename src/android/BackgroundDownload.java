@@ -53,16 +53,22 @@ public class BackgroundDownload extends CordovaPlugin {
         private String filePath;
         private String tempFilePath;
         private String uriString;
+		private String title;
+		private String description;
+		private int notificationVisibility;
         private CallbackContext callbackContext; // The callback context from which we were invoked.
         private CallbackContext callbackContextDownloadStart; // The callback context from which we started file download command.
         private long downloadId = DOWNLOAD_ID_UNDEFINED;
         private Timer timerProgressUpdate = null;
 
-        public Download(String uriString, String filePath,
-                CallbackContext callbackContext) {
+        public Download(String uriString, String filePath, String title, String description,
+				int notificationVisibility, CallbackContext callbackContext) {
             this.setUriString(uriString);
             this.setFilePath(filePath);
-            this.setTempFilePath(filePath + TEMP_DOWNLOAD_FILE_EXTENSION);
+            this.setTempFilePath(filePath); //+ TEMP_DOWNLOAD_FILE_EXTENSION);
+			this.setTitle(title);
+			this.setDescription(description);
+			this.setNotificationVisibility(notificationVisibility);
             this.setCallbackContext(callbackContext);
             this.setCallbackContextDownloadStart(callbackContext);
         }
@@ -89,6 +95,30 @@ public class BackgroundDownload extends CordovaPlugin {
 
         public void setTempFilePath(String tempFilePath) {
             this.tempFilePath = tempFilePath;
+        }
+		
+		public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+		
+		public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+		
+		public int getNotificationVisibility() {
+            return notificationVisibility;
+        }
+
+        public void setNotificationVisibility(int notificationVisibility) {
+            this.notificationVisibility = notificationVisibility;
         }
 
         public CallbackContext getCallbackContext() {
@@ -151,7 +181,9 @@ public class BackgroundDownload extends CordovaPlugin {
             cordova.getActivity().registerReceiver(receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         }
 
-        Download curDownload = new Download(args.get(0).toString(), args.get(1).toString(), callbackContext);
+        Download curDownload = new Download(args.get(0).toString(), args.get(1).toString(), 
+			args.get(2).toString(), args.get(3).toString(), Integer.parseInt(args.get(4).toString()),
+			callbackContext);
 
         if (activDownloads.containsKey(curDownload.getUriString())) {
             return;
@@ -171,11 +203,10 @@ public class BackgroundDownload extends CordovaPlugin {
 
             DownloadManager mgr = (DownloadManager) this.cordova.getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
             DownloadManager.Request request = new DownloadManager.Request(source);
-            request.setTitle("org.apache.cordova.backgroundDownload plugin");
+            request.setTitle(curDownload.getTitle());
+			request.setDescription(curDownload.getDescription());
             request.setVisibleInDownloadsUi(false);
-
-            // hide notification. Not compatible with current android api.
-            // request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
+			request.setNotificationVisibility(curDownload.getNotificationVisibility());
 
             // we use default settings for roaming and network type
             // request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);

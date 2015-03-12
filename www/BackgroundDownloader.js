@@ -34,9 +34,30 @@ var BackgroundDownloader = function() {
  *
  * @param {string} uri The location of the resource.
  * @param {File} resultFile The file that the response will be written to.
+ * @param {string} title The title of this download, to be displayed in notifications (if enabled).
+ * @param {string} description The description of this download, to be displayed in notifications (if enabled).
+ * @param {int} notificationVisibility Control whether a system notification is posted by the download manager while this download is running or when it is completed.
  */
-BackgroundDownloader.prototype.createDownload = function(uri, resultFile) {
-    return new DownloadOperation(uri, resultFile);
+BackgroundDownloader.prototype.createDownload = function(uri, resultFile, title, description, notificationVisibility) {
+    title = title || "org.apache.cordova.backgroundDownload plugin";
+	description = description || "";
+	notificationVisibility= notificationVisibility || 0;
+	return new DownloadOperation(uri, resultFile, title, description, notificationVisibility);
+};
+
+/**
+ * Control whether a system notification is posted by the download manager while this download is running or when it is completed.
+ *
+ * VISIBILITY_VISIBLE: This download is visible but only shows in the notifications while it's in progress.
+ * VISIBILITY_VISIBLE_NOTIFY_COMPLETED: This download is visible and shows in the notifications while in progress and after completion.
+ * VISIBILITY_HIDDEN: This download doesn't show in the UI or in the notifications.
+ * VISIBILITY_VISIBLE_NOTIFY_ONLY_COMPLETION: This download shows in the notifications after completion ONLY. 
+ */
+BackgroundDownloader.prototype.NotificationVisibility = { 
+		VISIBILITY_VISIBLE: 0,
+		VISIBILITY_VISIBLE_NOTIFY_COMPLETED: 1,
+		VISIBILITY_HIDDEN: 2,
+		VISIBILITY_VISIBLE_NOTIFY_ONLY_COMPLETION: 3
 };
 
 module.exports = BackgroundDownloader;

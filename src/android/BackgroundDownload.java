@@ -455,10 +455,10 @@ public class BackgroundDownload extends CordovaPlugin {
 			File sourceFile = new File(Uri.parse(curDownload.getTempFilePath()).getPath());
 			File destFile = new File(Uri.parse(curDownload.getFilePath()).getPath());
 			
-			if (destFile.exists())
-			{
-				destFile.delete();
-			}
+			//if (destFile.exists())
+			//{
+			//	destFile.delete();
+			//}
 			if (sourceFile.renameTo(destFile)) {
 				curDownload.getCallbackContextDownloadStart().success();
 			} else {
